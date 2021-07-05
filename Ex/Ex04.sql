@@ -40,6 +40,31 @@ where salary <any (select salary
 order by salary desc;
 
 --ex05
-select *
+select emp.employee_id,
+       emp.first_name,
+       emp.salary,
+       emp.department_id
 from employees emp
-where (emp.department_id, emp.salary) in (
+where (emp.department_id, emp.salary) in (select department_id, max(salary)
+                                          from employees
+                                          group by department_id)
+order by salary desc;
+
+--ex06
+select job_title,
+       sum(salary)
+from jobs job, employees emp
+where job.job_id = emp.job_id
+group by job_title
+order by sum(salary) desc;
+
+--ex07
+select emp.employee_id,
+       emp.first_name,
+       emp.salary
+from employees emp, (select department_id, avg(salary) salary
+                     from employees
+                     group by department_id) s
+where emp.department_id = s.department_id and emp.salary > s.salary;
+                
+--ex08
